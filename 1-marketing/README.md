@@ -18,7 +18,7 @@
 
 In this lab, we assume the role of a marketing analyst in the marketing department of a mobile phone operator. We have been tasked with identifying customers that are potentially at risk of churning. We have access to service usage and other customer behavior data, and want to know if this data can help explain why a customer would leave. If we can identify factors that explain churn, then we can take corrective actions to change predicted behavior, such as running targeted retention campaigns.
 
-For our dataset, we use a synthetic dataset from a telecommunications mobile phone carrier. You can download it :link[here]{href="https://sagemaker-sample-files.s3.amazonaws.com/datasets/tabular/synthetic/churn.csv" action=download}. This sample dataset contains 5,000 records, where each record uses 21 attributes to describe the customer profile. The attributes are as follows:
+For our dataset, we use a synthetic dataset from a telecommunications mobile phone carrier. You can download it: [here](https://sagemaker-sample-files.s3.amazonaws.com/datasets/tabular/synthetic/churn.csv). This sample dataset contains 5,000 records, where each record uses 21 attributes to describe the customer profile. The attributes are as follows:
 
 | Feild      | Description |
 | ----------- | ----------- |
@@ -144,7 +144,8 @@ Let's focus on the first tab, **Overview**. This is the tab that shows us the **
 
 ![](/static/lab1/model-status-1.png)
 
-::alert[Don\'t worry if the numbers in the below images differ from yours. Machine Learning introduces some stochasticity in the process of training models, which can lead to different results to different builds.]{type=warning}
+> **Warning**
+> Don\'t worry if the numbers in the below images differ from yours. Machine Learning introduces some stochasticity in the process of training models, which can lead to different results to different builds.
 
 Canvas separates the dataset into training and test sets. The training dataset is the data Canvas uses to build the model. The test set is used to see if the model performs well with new data. The Sankey diagram in the following screenshot shows how the model performed on the test set. To learn more, you can check the ["Evaluating Your Model's Performance in Amazon SageMaker Canvas" section](https://docs.aws.amazon.com/sagemaker/latest/dg/canvas-evaluate-model.html) of the Canvas documentation, as well as the page for [SHAP Baselines for Explainability](https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-feature-attribute-shap-baselines.html).
 
@@ -180,7 +181,8 @@ Now, you have two options:
 
 For the sake of this lab, we will go forward with Option 1.
 
-::alert[Note that training a model with **Standard Build** is necessary to share the model with a Data Scientist with the SageMaker Studio integration. **Predictions** do not require the full build, however they can lack in performances with respect to a fully-trained model.]{type=warning}
+> **Warning**
+> Note that training a model with **Standard Build** is necessary to share the model with a Data Scientist with the SageMaker Studio integration. **Predictions** do not require the full build, however they can lack in performances with respect to a fully-trained model.
 
 <br>
 
