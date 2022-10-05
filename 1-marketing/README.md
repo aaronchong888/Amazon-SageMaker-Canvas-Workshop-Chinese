@@ -1,16 +1,18 @@
----
-title : "實驗 1 - 客戶流失預測（市場營銷）"
-weight : 20
----
+# 實驗 1 - 客戶流失預測（市場營銷）
 
-::alert[開始實驗前請確保您已執行並完成 **先決條件** 中的步驟。]{type=warning}
+> **Warning**
+> 開始實驗前請確保您已執行並完成 **先決條件** 中的步驟。
+
+<br>
 
 ## 議程 Agenda
 
-1. [概述 Overview](#overview)
-1. [將數據導入 Canvas](#canvas)
-1. [建構和訓練 ML 模型](#ml)
-1. [使用模型生成預測 Predictions](#predictions)
+1. [概述 Overview](#概述-overview)
+1. [將數據導入 Canvas](#將數據導入-canvas)
+1. [建構和訓練 ML 模型](#建構和訓練-ml-模型)
+1. [使用模型生成預測 Predictions](#使用模型生成預測-predictions)
+
+<br>
 
 ## 概述 Overview
 
@@ -38,6 +40,8 @@ For our dataset, we use a synthetic dataset from a telecommunications mobile pho
 
 The last attribute, **Churn?**, is the attribute that we want the ML model to predict. The target attribute is binary, meaning our model predicts the output as one of two categories (True or False).
 
+<br>
+
 ## 將數據導入 Canvas
 
 Go back to the SageMaker Canvas tab created in the **Prerequisites** section. On the left menu, you can click the second icon to head to the Datasets section, then click the **Import** button.
@@ -61,6 +65,8 @@ The import process takes approximately 10 seconds (this can vary depending on da
 ![](/static/lab1/finaldataset.png)
 
 After we confirm that the imported dataset is ready, we create our model.
+
+<br>
 
 ## 建構和訓練 ML 模型
 
@@ -175,6 +181,8 @@ Now, you have two options:
 For the sake of this lab, we will go forward with Option 1.
 
 ::alert[Note that training a model with **Standard Build** is necessary to share the model with a Data Scientist with the SageMaker Studio integration. **Predictions** do not require the full build, however they can lack in performances with respect to a fully-trained model.]{type=warning}
+
+<br>
 
 ## 使用模型生成預測 Predictions
 
