@@ -1,17 +1,19 @@
----
-title : "實驗 6 - 機器故障預測（製造業）"
-weight : 20
----
+# 實驗 6 - 機器故障預測（製造業）
 
-::alert[開始實驗前請確保您已執行並完成 **先決條件** 中的步驟。]{type=warning}
+> **Warning**
+> 開始實驗前請確保您已執行並完成 **先決條件** 中的步驟。
+
+<br>
 
 ## 議程 Agenda
 
-1. [概述 Overview](#overview)
-1. [將數據集上傳 S3 存儲桶](#s3)
-1. [將數據導入 Canvas](#canvas)
-1. [建構和訓練 ML 模型](#ml)
-1. [使用模型生成預測 Predictions](#predictions)
+1. [概述 Overview](#概述-overview)
+1. [將數據集上傳 S3 存儲桶](#將數據集上傳-s3-存儲桶)
+1. [將數據導入 Canvas](#將數據導入-canvas)
+1. [建構和訓練 ML 模型](#建構和訓練-ml-模型)
+1. [使用模型生成預測 Predictions](#使用模型生成預測-predictions)
+
+<br>
 
 ## 概述 Overview
 
@@ -31,6 +33,8 @@ weight : 20
 | tool wear [min] | INT | 工具磨損，以 分鐘 為單位表示 |
 | failure type (target) | STRING | 故障類型：*No Failure*, *Overstrain* 或 *Power Failures*（目標欄位） |
 
+<br>
+
 ## 將數據集上傳 S3 存儲桶
 
 第一步是下載我們將使用的數據集。您可以到這裡下載：:link[檔案]{href="/static/datasets/maintenance_dataset.csv" action=download}.
@@ -43,13 +47,17 @@ weight : 20
 
 ![](/static/shared/studio-bucket.png)
 
-::alert[ **sagemaker-studio-\*** 在當初建立 SageMaker Studio domain 的時候，就已經自動建立。如果你參與 **Event Engine** 活動, 則講師會預先準備存儲桶。]
+
+> **Warning**
+>  **sagemaker-studio-\*** 在當初建立 SageMaker Studio domain 的時候，就已經自動建立。如果你參與 **Event Engine** 活動, 則講師會預先準備存儲桶。
 
 點擊 **Upload**。
 
 ![](/static/shared/s3_upload.png)
 
 在上傳頁面上，拖放剛才下載的 `maintenance_dataset.csv` 檔案，然後點擊頁面底部的 **Upload**。上傳完成後，您可以點擊右上角 **Close** 按鈕。現在，您應該看到上傳到存儲桶中的文件。
+
+<br>
 
 ## 將數據導入 Canvas
 
@@ -66,6 +74,8 @@ weight : 20
 ![](/static/lab6/canvas-dataset-preview.png)
 
 現在，您可預覽要導入的數據集的 100 筆資料。完成資料檢查，確定正確後，您可點擊 **Import Data**。
+
+<br>
 
 ## 建構和訓練 ML 模型
 
@@ -91,7 +101,9 @@ Canvas 將自動偵測這是 **3+ category prediction** 問題（也稱為多類
 
 ![](/static/lab6/canvas-model-build.png)
 
-::alert[請注意，這個數據集對於 "No Failure"（無故障）類的數據是高度不平衡的。雖然 Canvas 和其使用的 AutoML 功能可以部分處理數據集的不平衡，但這可能會導致一些性能偏差。作為本實驗後的額外下一步，您可以查看有關如何通過 Amazon SageMaker Data Wrangler 等服務來平衡數據集。]{type=warning}
+
+> **Warning**
+> 請注意，這個數據集對於 "No Failure"（無故障）類的數據是高度不平衡的。雖然 Canvas 和其使用的 AutoML 功能可以部分處理數據集的不平衡，但這可能會導致一些性能偏差。作為本實驗後的額外下一步，您可以查看有關如何通過 Amazon SageMaker Data Wrangler 等服務來平衡數據集。
 
 在屏幕的下半部，您可以查看數據集的一些統計屬性，包括缺失和不匹配的值，獨特的值，平均值和中位數。如果我們不想使用特定欄位，可以使用左邊的複選框進行檢查，取消特定欄位的勾選。
 
@@ -105,7 +117,8 @@ Canvas 將自動偵測這是 **3+ category prediction** 問題（也稱為多類
 
 ![](/static/lab6/canvas-model-analyze1.png)
 
-::alert[不用擔心以下截屏中顯示的數字是否與您的數字不同。機器學習在模型訓練過程中會引入一些隨機性，這將導致訓練產生出不同的結果。]{type=warning}
+> **Warning**
+> 不用擔心以下截屏中顯示的數字是否與您的數字不同。機器學習在模型訓練過程中會引入一些隨機性，這將導致訓練產生出不同的結果。
 
 讓我們轉到 **Scoring** 選項卡，您可以看到表示模型的預測值相對於實際值的分佈圖，而根據預測結果，大部分情況也屬於 **無故障**（"No Failure"）類別。假如您想了解有關 Canvas 如何使用 SHAP 基線為機器學習帶來可解釋性的詳細資料，您可以查看 ["Evaluating Your Model's Performance in Amazon SageMaker Canvas" section](https://docs.aws.amazon.com/sagemaker/latest/dg/canvas-evaluate-model.html) 和 [SHAP Baselines for Explainability](https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-feature-attribute-shap-baselines.html)。
 
@@ -132,7 +145,10 @@ Canvas 將自動偵測這是 **3+ category prediction** 問題（也稱為多類
 
 由於我們正在嘗試預測故障，而模型的準確率為 84%，因此我們有信心能使用該模型來識別可能的故障，而選擇選項 1。如果我們沒有信心，那麼我們可以讓數據科學家來審查 Canvas 建構的模型，並通過選項 2 來提高潛在的準確率。
 
-::alert[請注意，如果您要從 SageMaker Canvas 共享模型到 SageMaker Studio，您必須使用 **Standard Build** 來訓練模型。**Predictions** 並不需要**Standard Build**，但是它的性能和準確性會比經過完全訓練的模型低。]{type=warning}
+> **Warning**
+> 請注意，如果您要從 SageMaker Canvas 共享模型到 SageMaker Studio，您必須使用 **Standard Build** 來訓練模型。**Predictions** 並不需要**Standard Build**，但是它的性能和準確性會比經過完全訓練的模型低。
+
+<br>
 
 ## 使用模型生成預測 Predictions
 
@@ -151,6 +167,8 @@ Canvas 將自動偵測這是 **3+ category prediction** 問題（也稱為多類
 另外，您還可以選擇 **Single prediction** 來進行單次預測。這個適合模擬場景的應用（*what-if* scenarios），以及測試不同的欄位會如何影響模型的預測結果，例如：工具磨損程度如何影響故障類型？假如轉速改變會否帶來影響？
 
 ![](/static/lab6/canvas-singleprediction.png)
+
+<br>
 
 ----
 
