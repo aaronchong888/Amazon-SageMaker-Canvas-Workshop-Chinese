@@ -6,11 +6,13 @@
 > **Warning**
 > 您需要使用自己的 AWS 帳戶來執行這頁的步驟，當中可能會產生一些費用。
 
+<br>
 
-- [啟用 Amazon SageMaker Canvas](#amazon-sagemaker-canvas)
-- [新增 IAM 信任政策](#iam)
-- [新增 S3 存儲桶 CORS 規則](#s3-cors)
+- [啟用 Amazon SageMaker Canvas](#啟用-amazon-sagemaker-canvas)
+- [新增 IAM 信任政策](#新增-iam-信任政策)
+- [新增 S3 存儲桶 CORS 規則](#新增-s3-存儲桶-cors-規則)
 
+<br>
 
 ## 啟用 Amazon SageMaker Canvas
 
@@ -22,7 +24,8 @@ SageMaker Canvas 運用與 Amazon SageMaker 相同的技術來自動整理和合
 
 1.  打開 AWS 控制台並切換到您想要使用的 AWS 區域。
 
-::alert[圖中示例為愛爾蘭區域，但您也可以選擇其他提供 SageMaker Canvas 的區域。[區域列表](https://docs.aws.amazon.com/sagemaker/latest/dg/canvas.html)]
+> **Warning**
+> 圖中示例為愛爾蘭區域，但您也可以選擇其他提供 SageMaker Canvas 的區域。[區域列表](https://docs.aws.amazon.com/sagemaker/latest/dg/canvas.html)
 
 ![](/static/prerequisites/image22.png)
 
