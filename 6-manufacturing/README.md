@@ -37,7 +37,7 @@
 
 ## 將數據集上傳 S3 存儲桶
 
-第一步是下載我們將使用的數據集。您可以到這裡下載：:link[檔案]{href="/static/datasets/maintenance_dataset.csv" action=download}.
+第一步是下載我們將使用的數據集。您可以到這裡下載： [檔案](/static/datasets/maintenance_dataset.csv)
 
 轉到 AWS 管理控制台，在控制台頂部的搜索框中尋找 **S3**，然後去到 **S3** 服務控制台。
 
