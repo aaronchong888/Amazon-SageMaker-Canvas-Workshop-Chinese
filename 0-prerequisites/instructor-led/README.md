@@ -1,6 +1,7 @@
 # AWS 講師指導
 
-::alert[請按照講師及工作坊職員的指示來獲取和登錄是次活動提供的 AWS 帳戶。 請勿使用您的個人或企業 AWS 帳戶來運行實驗，否則實驗當中所需要的預建資源將無法使用。]{type=warning}
+> **Warning**
+> 請按照講師及工作坊職員的指示來獲取和登錄是次活動提供的 AWS 帳戶。 請勿使用您的個人或企業 AWS 帳戶來運行實驗，否則實驗當中所需要的預建資源將無法使用。
 
 - [獲取 Event Engine AWS 帳戶](#event-engine-aws)
 - [訪問 Amazon SageMaker Canvas](#amazon-sagemaker-canvas)

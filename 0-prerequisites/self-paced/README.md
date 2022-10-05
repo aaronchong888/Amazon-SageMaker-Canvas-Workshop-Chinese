@@ -1,8 +1,10 @@
 # 自定進度
 
-::alert[如果您已經執行了上頁 "AWS 講師指導" 中的步驟，則 **無須** 執行這頁的步驟。]{type=warning}
+> **Warning**
+> 如果您已經執行了上頁 "AWS 講師指導" 中的步驟，則 **無須** 執行這頁的步驟。
 
-::alert[您需要使用自己的 AWS 帳戶來執行這頁的步驟，當中可能會產生一些費用。]{type=warning}
+> **Warning**
+> 您需要使用自己的 AWS 帳戶來執行這頁的步驟，當中可能會產生一些費用。
 
 
 - [啟用 Amazon SageMaker Canvas](#amazon-sagemaker-canvas)
