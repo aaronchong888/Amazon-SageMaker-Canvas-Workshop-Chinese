@@ -38,7 +38,7 @@ The dataset we will use is the ["California Housing Dataset"](https://www.dcc.fc
 
 ## 將數據集上傳 S3 存儲桶
 
-The first step is to download the dataset that we will use. You can download it :link[here]{href="/static/datasets/housing.csv" action=download}. 
+The first step is to download the dataset that we will use. You can download it: [here](/static/datasets/housing.csv)
 
 Go to the AWS Management Console, search **S3** in the searchbox on top of your console, then go to **S3** service console.
 
