@@ -1,7 +1,9 @@
 # Amazon SageMaker Canvas Workshop (Chinese version)
 
-> **Note**
-> Please always refer to the latest published version of the **Amazon SageMaker Canvas Immersion Day** at [https://catalog.workshops.aws/canvas-immersion-day](https://catalog.workshops.aws/canvas-immersion-day)
+```
+**Note**
+Please always refer to the latest published version of the **Amazon SageMaker Canvas Immersion Day** at [https://catalog.workshops.aws/canvas-immersion-day](https://catalog.workshops.aws/canvas-immersion-day)
+```
 
 ![canvas-logo](/static/shared/canvas-logo.png)
 
