@@ -1,24 +1,28 @@
----
-title : "實驗 5 - 糖尿病患者再入院預測（醫療保健及生命科學）"
-weight : 20
----
+# 實驗 5 - 糖尿病患者再入院預測（醫療保健及生命科學）
 
-::alert[開始實驗前請確保您已執行並完成 **先決條件** 中的步驟。]{type=warning}
+> **Warning**
+> 開始實驗前請確保您已執行並完成 **先決條件** 中的步驟。
+
+<br>
 
 ## 議程 Agenda
 
-1. [概述 Overview](#overview)
-1. [糖尿病患者再入院預測 Diabetes Readmission](#diabetes-readmission)
-1. [在 Canvas 中創建模型並導入數據集](#canvas)
-  1. [將數據集上傳 S3 存儲桶](#s3)
-  1. [在 SageMaker Canvas 中創建模型](#sagemaker-canvas)
-  1. [將數據集導入模型 Import Dataset](#import-dataset)
-1. [建構和訓練 ML 模型](#ml)
-1. [使用模型生成預測 Predictions](#predictions)
+1. [概述 Overview](#概述-overview)
+1. [糖尿病患者再入院預測 Diabetes Readmission](#糖尿病患者再入院預測-diabetes-readmission)
+1. [在 Canvas 中創建模型並導入數據集](#在-canvas-中創建模型並導入數據集)
+  1. [將數據集上傳 S3 存儲桶](#將數據集上傳-s3-存儲桶)
+  1. [在 SageMaker Canvas 中創建模型](#在-sagemaker-canvas-中創建模型)
+  1. [將數據集導入模型 Import Dataset](#將數據集導入模型-import-dataset)
+1. [建構和訓練 ML 模型](#建構和訓練-ml-模型)
+1. [使用模型生成預測 Predictions](#使用模型生成預測-predictions)
+
+<br>
 
 ## 概述 Overview
 
 在本實驗中，您將學習如何使用 Amazon Sagemaker Canvas 分析代表患者和其醫療結果的歷史數據集，並以無需編寫代碼的方式來構建機器學習（ML）模型來預測病患再入院率。該模型必須預測高危糖尿病患者是否有可能在 30 天內或在 30 天后再次入院。由於此案例需要預測多個結果，因此這為 **多類分類** 的 ML 問題。
+
+<br>
 
 ## 糖尿病患者再入院預測 Diabetes Readmission
 
@@ -45,11 +49,13 @@ weight : 20
 | a1c_result | STRING | 表示採樣的結果範圍或是否未進行測試。可能的數值：">8", ">7", "normal" 或 "none"
 | readmitted | STRING | 住院再入院的日數。可能的數值："<30"（如果患者重新入院少於 30 天）, ">30" （如果患者在就診 30 天后重新入院）, "no"（無再入院記錄）
 
+<br>
+
 ## 在 Canvas 中創建模型並導入數據集
 
 ### 將數據集上傳 S3 存儲桶
 
-第一步是下載我們將使用的數據集。您可以到這裡下載：:link[檔案]{href="/static/datasets/diabetic-readmission.csv" action=download}.
+第一步是下載我們將使用的數據集。您可以到這裡下載： [檔案](/static/datasets/diabetic-readmission.csv)
 
 轉到 AWS 管理控制台，在控制台頂部的搜索框中尋找 **S3**，然後去到 **S3** 服務控制台。
 
@@ -57,7 +63,8 @@ weight : 20
 
 ![](/static/shared/studio-bucket.png)
 
-::alert[ **sagemaker-studio-\*** 在當初建立 SageMaker Studio domain 的時候，就已經自動建立。如果你參與 **Event Engine** 活動, 則講師會預先準備存儲桶。]
+> **Warning**
+>  **sagemaker-studio-\*** 在當初建立 SageMaker Studio domain 的時候，就已經自動建立。如果你參與 **Event Engine** 活動, 則講師會預先準備存儲桶。
 
 點擊 **Upload**。
 
@@ -66,6 +73,8 @@ weight : 20
 在上傳頁面上，拖放剛才下載的 `diabetes-readmission.csv` 檔案，然後點擊頁面底部的 **Upload**。上傳完成後，您可以點擊右上角 **Close** 按鈕。現在，您應該看到上傳到存儲桶中的文件。
 
 ![](/static/lab5/s3-file-upload.png)
+
+<br>
 
 ### 在 SageMaker Canvas 中創建模型
 
@@ -80,6 +89,8 @@ weight : 20
 如果這是您第一次建立 Canvas 模型，那麼您將看到一個彈出式歡迎，其中有關於如何通過 4 個簡單步驟建構您第一個模型的信息。您可以閱讀此信息，然後回到本實驗指南。
 
 ![](/static/shared/canvas-first-model-popup.png)
+
+<br>
 
 ### 將數據集導入模型 Import Dataset
 
@@ -103,7 +114,8 @@ Canvas 將自動移動到 **Build** 階段。在此選項卡中，選擇目標�
 
 ![](/static/lab5/target-selection.png)
 
-::alert[由於這次實驗演示的數據集並不平衡，因此會導致準確性降低。]{type=warning}
+> **Warning**
+> 由於這次實驗演示的數據集並不平衡，因此會導致準確性降低。
 
 Canvas 將自動偵測這是 **3+ category prediction** 問題（也稱為多類分類）。如果系統挑選的模型類型不正確，您也可以使用屏幕中心的鏈接 **Change type** 加以改變。
 
@@ -120,6 +132,8 @@ Canvas 將自動偵測這是 **3+ category prediction** 問題（也稱為多類
 您還可以轉到 `Grid View` 網格視圖來更深入地了解每一列，它會為您提供每列值的圖形分佈和示例數據：
 
 ![](/static/lab5/columns-grid-view-detail.png)
+
+<br>
 
 ## 建構和訓練 ML 模型
 
@@ -139,7 +153,8 @@ SageMaker Canvas 在構建 標準模型 時會自動為您進行一定程度的�
 
 ![](/static/lab5/analyze.png)
 
-::alert[不用擔心截屏中顯示的數字是否與您的數字不同。機器學習在模型訓練過程中會引入一些隨機性，這將導致訓練產生出不同的結果。]{type=warning}
+> **Warning**
+> 不用擔心截屏中顯示的數字是否與您的數字不同。機器學習在模型訓練過程中會引入一些隨機性，這將導致訓練產生出不同的結果。
 
 讓我們轉到 **Scoring** 選項卡，您可以看到表示模型的預測值相對於實際值的分佈圖，而根據預測結果，大部分病患也無須再入院。假如您想了解有關 Canvas 如何使用 SHAP 基線為機器學習帶來可解釋性的詳細資料，您可以查看 ["Evaluating Your Model's Performance in Amazon SageMaker Canvas" section](https://docs.aws.amazon.com/sagemaker/latest/dg/canvas-evaluate-model.html) 和 [SHAP Baselines for Explainability](https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-feature-attribute-shap-baselines.html)。
 
@@ -156,6 +171,8 @@ SageMaker Canvas 在構建 標準模型 時會自動為您進行一定程度的�
 當然，您會更感興趣的是模型對 **患者再入院** 的預測程度。該模型正確預測 `7890` 客戶不會重新入院（真陽性 - TP）。然而，它錯誤地預測了 `4801` 客戶不會再入院，而實際上他們是會的（假陰性 - FN）。在機器學習中，用來衡量這一點的比率是 TP / (TP + FN)，這稱為召回率。**Advanced metrics** 頁面計算並顯示出此模型的召回率為 `36%`。
 
 ![](/static/lab5/advanced-metrics-0.png)
+
+<br>
 
 ## 使用模型生成預測 Predictions
 
@@ -174,6 +191,8 @@ SageMaker Canvas 在構建 標準模型 時會自動為您進行一定程度的�
 另外，您還可以選擇 **Single prediction** 來進行單次預測。這個適合模擬場景的應用（*what-if* scenarios），以及測試不同的欄位會如何影響模型的預測結果。
 
 ![](/static/lab5/single-prediction-result.png)
+
+<br>
 
 ----
 
