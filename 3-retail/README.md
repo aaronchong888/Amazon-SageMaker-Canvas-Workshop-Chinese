@@ -1,20 +1,23 @@
----
-title : "實驗 3 - 銷售預測（零售電商）"
-weight : 20
----
+# 實驗 3 - 銷售預測（零售電商）
 
-::alert[開始實驗前請確保您已執行並完成 **先決條件** 中的步驟。]{type=warning}
+> **Warning**
+> 開始實驗前請確保您已執行並完成 **先決條件** 中的步驟。
 
-::alert[這個實驗大概需要 3 - 4 小時才能完成。]{type=warning}
+> **Warning**
+> 這個實驗大概需要 3 - 4 小時才能完成。
+
+<br>
 
 ## 議程 Agenda
 
-1. [概述 Overview](#overview)
-1. [前言 Forenote](#forenote)
-1. [將數據導入 Canvas](#canvas)
-1. [建構和訓練 ML 模型](#ml)
-1. [使用模型生成預測 Predictions](#predictions)
-1. [清理 Cleanup](#cleanup)
+1. [概述 Overview](#概述-overview)
+1. [前言 Forenote](#前言-forenote)
+1. [將數據導入 Canvas](#將數據導入-canvas)
+1. [建構和訓練 ML 模型](#建構和訓練-ml-模型)
+1. [使用模型生成預測 Predictions](#使用模型生成預測-predictions)
+1. [清理 Cleanup](#清理-cleanup)
+
+<br>
 
 ## 概述 Overview
 
@@ -34,7 +37,7 @@ This lab can proceed in two ways:
 
 ::::tabs{variant="container" groupId=canvasSource}
 :::tab{id="s3" label="Amazon S3"}
-If you're using going for this option, download the :link[CSV file]{href="/static/datasets/store_daily_sales_reduced.csv" action=download}.
+If you're using going for this option, download the file: [CSV file](/static/datasets/store_daily_sales_reduced.csv)
 
 Go to the AWS Management Console, search **S3** in the searchbox on top of your console, then go to **S3** service console.
 
@@ -44,7 +47,8 @@ In the S3 console, click on the **sagemaker-studio-\*** bucket.
 
 ![](/static/shared/studio-bucket.png)
 
-::alert[The **sagemaker-studio-\*** bucket was created automatically when you created the SageMaker Studio domain in the **Prerequisites** section. If you follow the **Event Engine** track, the bucket was pre-provisioned by you instructor.]
+> **Warning**
+> The **sagemaker-studio-\*** bucket was created automatically when you created the SageMaker Studio domain in the **Prerequisites** section. If you follow the **Event Engine** track, the bucket was pre-provisioned by you instructor.
 
 Click **Upload**.
 
@@ -54,7 +58,8 @@ On the Upload page, drag and drop the `store_daily_sales_reduced.csv` file you'v
 :::
 :::tab{id="redshift" label="Amazon Redshift"}
 
-::alert[Note: if you're running the lab with these labs in environments provided by AWS trainers (Event Engine), you don't need to launch the Redshift cluster as described here. You can skip to the [Import the dataset in Canvas](#import-the-dataset-in-canvas) section.]{type=warning}
+> **Warning**
+> Note: if you're running the lab with these labs in environments provided by AWS trainers (Event Engine), you don't need to launch the Redshift cluster as described here. You can skip to the [Import the dataset in Canvas](#import-the-dataset-in-canvas) section.
 
 Set-up a connection to a Redshift cluster, and load data from there - you can create your Redshift cluster downloading this :link[CloudFormation template]{href="/assets/lab3-module/redshift.yaml" action=download} and then creating the CloudFormation stack by following the documentation on :link[Creating a stack on the AWS CloudFormation console]{href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-create-stack.html"}:
 
@@ -65,6 +70,8 @@ Set-up a connection to a Redshift cluster, and load data from there - you can cr
 1. In the review page, scroll down to the **Capabilities** section, and select "I acknowledge that AWS CloudFormation might create IAM resources". Hit **Create stack**.
 :::
 ::::
+
+<br>
 
 ## 將數據導入 Canvas
 
@@ -119,6 +126,8 @@ Now, you can provide a dataset name, for example `store_sales_data`, and click a
 :::
 ::::
 
+<br>
+
 ## 建構和訓練 ML 模型
 
 Now that the dataset is imported, you can create a new model by going to the Models screen, and clicking on the **\+ New Model** button.
@@ -153,6 +162,8 @@ Now that the configuration is done, we're ready to train the model. At the momen
 
 ![](/static/lab3/model-training.png)
 
+<br>
+
 ## 使用模型生成預測 Predictions
 
 When the model training finishes, you will be routed to the **Analyze** tab. There, you can see the average prediction accuracy, and the column impact on prediction outcome. Click on the **Predict** button, to be brought to the **Predict** tab.
@@ -167,11 +178,15 @@ For the generated forecast prediction, you can click on the **Download** dropdow
 
 ![](/static/lab3/forecasts.png)
 
+<br>
+
 ## 清理 Cleanup
 
 At the end of your experimentation, don't forget to delete the Redshift cluster created at the beginning of this lab. In order to do so, head over to the [CloudFormation Management Console page](https://console.aws.amazon.com/cloudformation), and delete the stack you created.
 
 ![](/static/lab3/delete-cfn-stack.png)
+
+<br>
 
 -------
 
