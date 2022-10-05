@@ -1,17 +1,19 @@
----
-title : "實驗 2 - 房價預測（房地產）"
-weight : 20
----
+# 實驗 2 - 房價預測（房地產）
 
-::alert[開始實驗前請確保您已執行並完成 **先決條件** 中的步驟。]{type=warning}
+> **Warning**
+> 開始實驗前請確保您已執行並完成 **先決條件** 中的步驟。
+
+<br>
 
 ## 議程 Agenda
 
-1. [概述 Overview](#overview)
-1. [將數據集上傳 S3 存儲桶](#s3)
-1. [將數據導入 Canvas](#canvas)
-1. [建構和訓練 ML 模型](#ml)
-1. [使用模型生成預測 Predictions](#predictions)
+1. [概述 Overview](#概述-overview)
+1. [將數據集上傳 S3 存儲桶](#將數據集上傳-s3-存儲桶)
+1. [將數據導入 Canvas](#將數據導入-canvas)
+1. [建構和訓練 ML 模型](#建構和訓練-ml-模型)
+1. [使用模型生成預測 Predictions](#使用模型生成預測-predictions)
+
+<br>
 
 ## 概述 Overview
 
@@ -32,6 +34,7 @@ The dataset we will use is the ["California Housing Dataset"](https://www.dcc.fc
 | median_house_value (target) | DECIMAL | Median house value for households within a block (measured in US Dollars) |
 | ocean_proximity | STRING | Location of the house w.r.t ocean/sea |
 
+<br>
 
 ## 將數據集上傳 S3 存儲桶
 
@@ -45,7 +48,8 @@ In the S3 console, click on the **sagemaker-studio-\*** bucket.
 
 ![](/static/shared/studio-bucket.png)
 
-::alert[The **sagemaker-studio-\*** bucket was created automatically when you created the SageMaker Studio domain in the **Prerequisites** section. If you follow the **Event Engine** track, the bucket was pre-provisioned by you instructor.]
+> **Warning**
+> The **sagemaker-studio-\*** bucket was created automatically when you created the SageMaker Studio domain in the **Prerequisites** section. If you follow the **Event Engine** track, the bucket was pre-provisioned by you instructor.
 
 Click **Upload**.
 
@@ -54,6 +58,8 @@ Click **Upload**.
 On the Upload page, drag and drop the `housing.csv` file you've just downloaded, then click **Upload** at the bottom of the page. Once the upload is complete, you can now click the top-right **Close** button. You should now see the file uploaded in your bucket.
 
 ![](/static/lab2/s3-uploaded-housing.png)
+
+<br>
 
 ## 將數據導入 Canvas
 
@@ -72,6 +78,8 @@ You can now select the `housing.csv` file uploaded previously by selecting the c
 You now face a 100-rows preview of the dataset you're looking to import. Once you're done checking that it's indeed the right one, you can click on **Import Data**.
 
 ![](/static/lab2/canvas-preview.png)
+
+<br>
 
 ## 建構和訓練 ML 模型
 
@@ -105,7 +113,8 @@ Now, we wait anywhere from 2 to 15 minutes that the training is done. Since the 
 
 ![](/static/lab2/housing-analyze.png)
 
-::alert[Don\'t worry if the numbers in the below images differ from yours. Machine Learning introduces some stochasticity in the process of training models, which can lead to different results to different builds.]{type=warning}
+> **Warning**
+> Don\'t worry if the numbers in the below images differ from yours. Machine Learning introduces some stochasticity in the process of training models, which can lead to different results to different builds.
 
 Our model is showing in big numbers a metric for our regression problem, called Root Mean Squared Error (RMSE). This represents a measurement for the spread of predictions, with a lower value indicating more accurate predictions of our target variable. This means that our prediction have a squared error of +-48k$. We will see by how much our prediction are off later. 
 
@@ -124,7 +133,10 @@ Now, you have two options:
 
 For the sake of this lab, we will go forward with Option 1. Feel free to take your time and run option 2 if you want to. 
 
-::alert[Note that training a model with **Standard Build** is necessary to share the model with a Data Scientist with the SageMaker Studio integration. **Predictions** do not require the full build, however they can lack in performances with respect to a fully-trained model.]{type=warning}
+> **Warning**
+> Note that training a model with **Standard Build** is necessary to share the model with a Data Scientist with the SageMaker Studio integration. **Predictions** do not require the full build, however they can lack in performances with respect to a fully-trained model.
+
+<br>
 
 ## 使用模型生成預測 Predictions
 
