@@ -1,9 +1,10 @@
 # Amazon SageMaker Canvas Workshop (Chinese version)
 
+<br>
+
 > **Note**
 > 
 > Please always refer to the latest published version of the **Amazon SageMaker Canvas Immersion Day** at [https://catalog.workshops.aws/canvas-immersion-day](https://catalog.workshops.aws/canvas-immersion-day)
-
 
 <br>
 
@@ -15,6 +16,8 @@ Amazon SageMaker Canvas 工作坊是一個可以自定進度或由講師指導�
 
 運行這些實驗並不要求您有任何特定的背景知識。如果您本身對機器學習 (ML) 及其術語已有一定程度的了解，則會更容易理解每個實驗的結果。假如您希望按照自己的進度去運行實驗，您需要自備一個 AWS 賬戶。在這種情況下，不同的實驗將會產生不同的費用，其中部份費用有機會能以 [SageMaker Canvas 免費方案](https://aws.amazon.com/sagemaker/pricing/) 抵消。
 
+<br>
+
 ## 讓我們開始實驗吧！
 
 0. [先決條件](./0-prerequisites/)
@@ -25,6 +28,8 @@ Amazon SageMaker Canvas 工作坊是一個可以自定進度或由講師指導�
 5. [Canvas for 醫療保健及生命科學：糖尿病患者再入院預測（多類分類）](./5-hcls/)
 6. [Canvas for 製造業：機器故障預測（多類分類）](./6-manufacturing/)
 7. [Canvas for 運輸與物流：供應鏈準時交付預測（回歸）](./7-supply-chain/)
+
+<br>
 
 ## 視頻資源
 
