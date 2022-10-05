@@ -5,6 +5,8 @@
 Please always refer to the latest published version of the **Amazon SageMaker Canvas Immersion Day** at [https://catalog.workshops.aws/canvas-immersion-day](https://catalog.workshops.aws/canvas-immersion-day)
 ```
 
+<br>
+
 ![canvas-logo](/static/shared/canvas-logo.png)
 
 Amazon SageMaker Canvas 工作坊是一個可以自定進度或由講師指導的實驗室，讓客戶和合作夥伴能使用 Amazon SageMaker Canvas 透過無代碼機器學習 (no-code ML) 的方式來解決現實世界中的挑戰。雖然任何人都能夠完全自主地使用 Amazon SageMaker Canvas，但這次的工作坊內容將會針對商業分析師 (Business Analysts) 的角色而設計。
@@ -32,7 +34,7 @@ Amazon SageMaker Canvas 工作坊是一個可以自定進度或由講師指導�
 
 Amazon SageMaker Canvas 在 AWS re\:Invent 2021 中的演示（從 1:36:01 開始）：
 
-[https://youtu.be/ue9aumC7AAk](https://youtu.be/ue9aumC7AAk)
+[https://youtu.be/ue9aumC7AAk?t=5761](https://youtu.be/ue9aumC7AAk?t=5761)
 
 1 小時 Amazon SageMaker Canvas 的 deep-dive 視頻及 BMW 的成功故事分享：
 
