@@ -31,6 +31,8 @@
 | promo | INT (0 /1) |
 | schoolholiday | INT (0/1) |
 
+<br>
+
 ## 前言 Forenote
 
 本實驗可以通過兩種方式進行，請選擇以下其中一種方法： 
@@ -61,7 +63,7 @@
 > **Warning**
 > 注意：如果您是參與 AWS 講師指導活動並使用 **Event Engine** 提供的環境運行實驗，則 **無須** 按照這個部分的指示來創建 Amazon Redshift。您可以直接跳到 [將數據導入 Canvas](#將數據導入-canvas) 部分。
 
-首先，您需要創建 Redshift，請下載此檔案：[CloudFormation 模板](/assets/lab3-module/redshift.yaml)，並按照以下步驟來創建 CloudFormation stack：
+首先，您需要創建 Redshift，請下載此檔案：[CloudFormation 模板](/static/redshift.yaml)，並按照以下步驟來創建 CloudFormation stack：
 
 1. 轉到 **AWS CloudFormation** 服務控制台以建立堆疊（stack）： [鏈接](https://console.aws.amazon.com/cloudformation/home?#/stacks/create/template)
 1. 在 **Specify template**（指定範本）頁面上，選擇 **Upload a template file**

@@ -1,0 +1,190 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: "Template to initialize the resources for the Canvas Immersion day"
+
+Parameters:
+  RedshiftClusterIdentifier:
+    Type: String
+    Default: "redshift-cluster-1"
+  RedshiftDatabaseName:
+    Type: String
+    Default: "dev"
+  RedshiftMasterUsername:
+    Type: String
+    Default: "awsuser"
+  RedshiftMasterUserPassword:
+    Type: String
+    Default: "redshiftTemporaryClusterPassword2022"
+  RedshiftNodeType:
+    Type: String
+    Default: "dc2.large"
+
+Resources:
+  RedshiftRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: "CanvasImmDayRedshiftConnectorRole"
+      Description: "IAM Role to use with Redshift cluster"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonRedshiftAllCommandsFullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - redshift.amazonaws.com
+                - redshift-serverless.amazonaws.com
+                - sagemaker.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+
+  RedshiftCluster:
+    Type: AWS::Redshift::Cluster
+    Properties:
+      ClusterIdentifier: !Ref RedshiftClusterIdentifier
+      DBName: !Ref RedshiftDatabaseName
+      MasterUsername: !Ref RedshiftMasterUsername
+      ClusterType: "single-node"
+      MasterUserPassword: !Ref RedshiftMasterUserPassword
+      NodeType: !Ref RedshiftNodeType
+      IamRoles:
+        - !GetAtt RedshiftRole.Arn
+
+  RedshiftSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: "The secret to store Redshift credentials"
+      SecretString: !Join
+        - ''
+        - - '{"engine": "redshift","host": "'
+          - !GetAtt RedshiftCluster.Endpoint.Address
+          - '", "username": "'
+          - !Ref RedshiftMasterUsername
+          - '", "password": "'
+          - !Ref RedshiftMasterUserPassword
+          - '", "dbname": "'
+          - !Ref RedshiftDatabaseName
+          - '"}'
+  
+  RedshiftSecretAttachment:
+    Type: AWS::SecretsManager::SecretTargetAttachment
+    Properties:
+      SecretId: !Ref RedshiftSecret
+      TargetId: !Ref RedshiftClusterIdentifier
+      TargetType: AWS::Redshift::Cluster
+    DependsOn: RedshiftCluster
+
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Description: "Lambda Role to write data to Redshift cluster"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonRedshiftDataFullAccess
+        - arn:aws:iam::aws:policy/SecretsManagerReadWrite
+        - arn:aws:iam::aws:policy/AWSLambdaExecute
+        
+  LoadRedshiftFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: "Lambda function to load data to Redshift"
+      Runtime: python3.9
+      Timeout: 60
+      Role: !GetAtt LambdaRole.Arn
+      Handler: index.handler
+      Environment:
+        Variables:
+          S3_URI: s3://ee-assets-prod-us-east-1/modules/d174e41d2095492da0890dfda4606261/v1/store_daily_sales_reduced.csv
+          IAM_ROLE: !GetAtt RedshiftRole.Arn
+          SECRET_ARN: !Ref RedshiftSecret
+          CLUSTER_IDENTIFIER: !Ref RedshiftClusterIdentifier
+          DATABASE: !Ref RedshiftDatabaseName
+      Code:
+        ZipFile: |
+          import json
+          import boto3
+          import time
+          import os
+          import cfnresponse
+
+          def handler(event, context):
+              # Load info
+              client = boto3.client('redshift-data')
+              sql1="create table public.storesales (store INT, saledate VARCHAR(20), sales DECIMAL, promo INT, schoolholiday INT);"
+              sql2=f"copy public.storesales (store,saledate,sales,promo,schoolholiday) from '{os.environ['S3_URI']}' iam_role '{os.environ['IAM_ROLE']}' Csv IGNOREHEADER 1 REGION AS 'us-east-1'"
+              # Execute
+              try:
+                  query = client.execute_statement(
+                      ClusterIdentifier = os.environ['CLUSTER_IDENTIFIER'], 
+                      Database = os.environ['DATABASE'], 
+                      SecretArn=os.environ['SECRET_ARN'],
+                      Sql= sql1
+                  )
+                  status = "RUNNING"
+                  
+                  ## CHECK THE STATUS OF THE QUERY
+                  while (status not in ['FINISHED','ABORTED','FAILED']):
+                      time.sleep(10)
+                      response = client.describe_statement(
+                          Id=query["Id"]
+                      )
+                      status = response["Status"]
+                  if status != 'FINISHED':
+                      raise Exception(response["Error"])
+                  else:
+                      print('sql1 output: '+str(response))
+                  
+                  ## EXECUTE THE SECOND QUERY
+                  outcome = client.execute_statement(
+                      ClusterIdentifier = os.environ['CLUSTER_IDENTIFIER'], 
+                      Database = os.environ['DATABASE'], 
+                      SecretArn=os.environ['SECRET_ARN'],
+                      Sql= sql2
+                  )
+                  status = "RUNNING"
+                  
+                  ## CHECK THE STATUS OF THE QUERY
+                  while (status not in ['FINISHED','ABORTED','FAILED']):
+                      time.sleep(10)
+                      response = client.describe_statement(
+                          Id=query["Id"]
+                      )
+                      status = response["Status"]
+                  if status != 'FINISHED':
+                      raise Exception(response["Error"])
+                  else:
+                      print('sql2 output: '+str(response))
+                  responseData = {
+                      'statusCode': 200,
+                      'Status': 'SUCCESS',
+                      'Reason': 'Data successfully copied.'
+                  }
+                  cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData, context.log_stream_name)
+              except Exception as e:
+                  print(e)
+                  responseData = {
+                      'statusCode': 400,
+                      'Status': 'FAILED',
+                      'Reason': str(e)
+                  }
+                  cfnresponse.send(event, context, cfnresponse.FAILED, responseData, context.log_stream_name)
+              finally:
+                  return responseData
+
+    DependsOn: RedshiftCluster
+
+  InvokeRedshiftLambdaFunction:
+    Type: AWS::CloudFormation::CustomResource
+    Properties:
+      ServiceToken: !GetAtt LoadRedshiftFunction.Arn
+    DependsOn: [RedshiftCluster, LoadRedshiftFunction]
