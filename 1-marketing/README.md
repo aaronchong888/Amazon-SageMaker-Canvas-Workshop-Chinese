@@ -16,205 +16,199 @@
 
 ## 概述 Overview
 
-In this lab, we assume the role of a marketing analyst in the marketing department of a mobile phone operator. We have been tasked with identifying customers that are potentially at risk of churning. We have access to service usage and other customer behavior data, and want to know if this data can help explain why a customer would leave. If we can identify factors that explain churn, then we can take corrective actions to change predicted behavior, such as running targeted retention campaigns.
+在本實驗中，您將擔任某移動電話運營商營銷部門的營銷分析師的角色。作為業務分析師，您的任務是要識別可能存在流失風險的客戶。您可以獲取客戶的服務使用情況和其他行為的數據，並要使用這些數據來幫助解釋客戶離開的原因。如果我們能夠識別出導致客戶流失的因素，那麼我們就可以採取糾正措施來改變預計的行為，例如可以開展針對特定客戶的保留活動。
 
-For our dataset, we use a synthetic dataset from a telecommunications mobile phone carrier. You can download it: [here](https://sagemaker-sample-files.s3.amazonaws.com/datasets/tabular/synthetic/churn.csv). This sample dataset contains 5,000 records, where each record uses 21 attributes to describe the customer profile. The attributes are as follows:
+您將使用一個來自電信運營商的合成數據集。此示例數據集包含大約 5,000 行，21 個特徵列，而數據架構如下：
 
-| Feild      | Description |
+| 欄位名稱      | 描述 |
 | ----------- | ----------- |
-| **State**      | The US state in which the customer resides, indicated by a two-letter abbreviation; for example, OH or NJ     |
-| **Account Length**  | The number of days that this account has been active        |
-| **Area Code** | The three-digit area code of the customer’s phone number        |
-| **Phone** | The remaining seven-digit phone number       |
-| **Int’l Plan** | Whether the customer has an international calling plan (yes/no)       |
-| **VMail Plan** | Whether the customer has a voice mail feature (yes/no)       |
-| **VMail Message** | The average number of voice mail messages per month       |
-| **Day Mins** | The total number of calling minutes used during the day       |
-| **Day Calls** | The total number of calls placed during the day       |
-| **Day Charge** | The billed cost of daytime calls       |
-| **Eve Mins, Eve Calls, Eve Charge** | The billed cost for evening calls       |
-| **Night Mins, Night Calls, Night Charge** | The billed cost for nighttime calls       |
-| **Intl Mins, Intl Calls, Intl Charge** | The billed cost for international calls       |
-| **CustServ Calls** | The number of calls placed to customer service       |
-| **Churn?** | Whether the customer left the service (true/false)       |
+| **State**      | 客戶居住的美國州份，以兩個英文字母的縮寫表示；例如：OH（俄亥俄州）或 NJ（新澤西州） |
+| **Account Length**  | 帳戶活躍的天數 |
+| **Area Code** | 客戶電話號碼的三位數區號 |
+| **Phone** | 區號以外的七位數電話號碼 |
+| **Int’l Plan** | 客戶是否有國際通話計劃（yes/no） |
+| **VMail Plan** | 客戶是否有語音信箱功能（yes/no） |
+| **VMail Message** | 每月平均語音信息數量 |
+| **Day Mins** | 日間使用的通話總分鐘數 |
+| **Day Calls** | 日間撥打的電話總數 |
+| **Day Charge** | 日間通話的計費費用 |
+| **Eve Mins, Eve Calls, Eve Charge** | 黃昏通話的計費費用 |
+| **Night Mins, Night Calls, Night Charge** | 夜間通話的計費費用 |
+| **Intl Mins, Intl Calls, Intl Charge** | 國際電話的計費費用 |
+| **CustServ Calls** | 撥打至客戶服務的電話數量 |
+| **Churn?** | 客戶是否離開服務（true/false） |
 
-The last attribute, **Churn?**, is the attribute that we want the ML model to predict. The target attribute is binary, meaning our model predicts the output as one of two categories (True or False).
+最後的一個欄位 **Churn?** 是我們希望 ML 模型能作出預測的目標欄位。
 
 <br>
 
 ## 將數據導入 Canvas
 
-Go back to the SageMaker Canvas tab created in the **Prerequisites** section. On the left menu, you can click the second icon to head to the Datasets section, then click the **Import** button.
+第一步是下載我們將使用的數據集。您可以到這裡下載：:link[檔案]{href="https://sagemaker-sample-files.s3.amazonaws.com/datasets/tabular/synthetic/churn.csv" action=download}.
+
+轉到 Sagemaker Canvas。在左側選單上，您可以點擊第二個圖標，進入數據集部分，然後點擊 **Import** 按鈕。
 
 ![](/static/shared/import-data.png)
 
-Now, select **Upload** option and browse the `churn.csv` file which we downloaded previously.
+現在，點擊 **Upload** 並上傳我們已下載的 `churn.csv` 檔案。
 
 ![](/static/lab1/import-from-local.png)
 
- In the pop-up at the bottom of your page: Select **Preview**.
+在頁面底部選擇 **Preview**。
 
 ![](/static/lab1/import-preview.png)
 
-You now see a  preview of the dataset you're looking to import. Once you're done checking that it's indeed the right one, you can click on **Import Data**.
+現在，您可預覽要導入的數據集的 100 筆資料。完成資料檢查，確定正確後，您可點擊 **Import Data**。
 
 ![](/static/lab1/final-import.png)
 
-The import process takes approximately 10 seconds (this can vary depending on dataset size). When it’s complete, we can see the dataset is in Ready status.
+導入過程大約需時 10 秒（因數據集大小而異）。完成後，我們可以看到數據集處於 **Ready**（就緒）狀態。
 
 ![](/static/lab1/finaldataset.png)
 
-After we confirm that the imported dataset is ready, we create our model.
+在確認導入的數據集準備好後，接下來我們將會創建機器學習模型。
 
 <br>
 
 ## 建構和訓練 ML 模型
 
-Now, let's head back to the **Models** section of the web page, by clicking the second button on the left menu.
+現在，讓我們通過點擊左邊選單上的第二個按鈕回到 **Models** 部分。
 
 ![](/static/shared/canvas-models.png)
 
-Click on **\+ New model**, and name your model `CustomerChurn`. 
+點擊 **\+ New model**，並為您的模型輸入名稱，例如 `CustomerChurn`，然後選擇 **Create**。
 
 ![](/static/lab1/new-model.png)
 
-In the Model view, you will see four tabs, which correspond to the four steps to create a model and use it to generate predictions: **Select**, **Build**, **Analyze**, **Predict**. In the first tab, **Select**, click the radio button to select the `churn.csv` dataset we've uploaded previously. This dataset includes 21 columns and 41K rows. Click the bottom button **Select dataset**.
+在模型視圖中，您將看到四個選項卡，它們對應於創建模型並使用它來生成預測的四個步驟：**Select**，**Build**，**Analyze**，**Predict**。在第一個選項卡 **Select** 中，選擇我們之前已經上載的 `churn.csv` 數據集。 該數據集包括 21 欄位和 5k 筆數據。點擊底部的按鈕 **Select dataset**。
 
 ![](/static/lab1/model-dataset.png)
 
-Canvas will automatically move to the **Build** phase. In this tab, choose the target column, in our case `churn?`. Your marketing team has informed you that this column indicates  whether the customer left the service (true/false). This is what you want to train your model to predict. Canvas will automatically detect that this is a **2 Category** problem (also known as binary classification). If the wrong model type is detected, you can change it manually with the **Change type** link at the center of the screen.
+Canvas 將自動移動到 **Build** 階段。在此選項卡中，選擇目標欄位，在我們的情況下是 `churn?`。您的營銷團隊表示，此欄位代表了客戶是否離開了服務（true/false），這便是我們想要訓練模型來進行預測的目標。
 
+Canvas 將自動偵測這是 **2 category prediction** 問題（也稱為二元分類）。如果系統挑選的模型類型不正確，您也可以使用屏幕中心的鏈接 **Change type** 加以改變。
 
 ![](/static/lab1/model-build.png)
 
-We now validate some assumptions. We want to get a quick view into whether our target column can be predicted by the other columns. We can get a fast view into the model’s estimated accuracy and column impact (the estimated importance of each column in predicting the target column).
+我們首先可以驗證一些假設，例如我們想快速了解 目標欄位 是否可以使用 其他欄位 來預測，並初步了解模型的 預計準確度 和 欄位影響（不同欄位在預測目標時的重要性）。
 
-Select the **Preview** option
+點擊 **Preview model** 按鈕。
 
 ![](/static/lab1/model-preview.png)
 
-This feature uses a subset of our dataset and only a single pass at modeling. For our use case, the preview model takes approximately 2 minutes to build.
+預覽模型 將會使用數據集中的一小部分，並且在建模時僅使用一次。對於我們的示例，構建 預覽模型 大約需要 2 分鐘。
 
 ![](/static/lab1/model-preview-1.png)
 
-If you scroll down you will notice, the Phone and State columns have much less impact on our prediction. We want to be careful when removing text input because it can contain important discrete, categorical features contributing to our prediction. Here, the phone number is just the equivalent of an account number—not of value in predicting other accounts’ likelihood of churn, and the customer’s state doesn’t impact our model much.
-
- 
+完成後，當您向下滾動時，會注意到 `Phone` 和 `State` 這兩個欄位對我們的預測結果只有很少影響。我們在剔除 文本類別 的欄位時要多加留意，因為它可能包含有助於我們預測結果的重要離散分類特徵。而在這次實驗中，電話號碼 其實相當於一個帳號，它在預測客戶流失的可能性方面並沒有價值；而 客戶的居住州份 對我們的模型並沒有產生太大影響。
 
 ![](/static/lab1/feature-1.png)
 
-Let us remove the Phone and State columns, for this let us uncheck those features
-
-
+因此，我們將會剔除 `Phone` 和 `State` 這兩個欄位。
 
 ![](/static/lab1/feature-2.png)
 
-let’s run the preview again. Select **Update**
+讓我們再一次運行預覽，選擇 **Update**。
 
 ![](/static/lab1/feature-3.png)
 
-As shown in the following screenshot, the model accuracy increased by 0.1%.
+如下圖所示，這次的模型準確率提高了 0.1%。
 
 ![](/static/lab1/feature-4.png)
 
-As shown in the above screenshot, the model accuracy increased by 0.1%. Our preview model has a 95.9% estimated accuracy, and the columns with the biggest impact are Night Calls, Eve Mins, and Night Charge. This gives us an insight into what columns impact the performance of our model the most. Here we need to be careful when doing feature selection because if a single feature is extremely impactful on a model’s outcome, it’s a primary indicator of target leakage, and the feature won’t be available at the time of prediction. In this case, few columns showed very similar impact, so we continue to build our model.
+我們的預覽模型估計準確率為 95.9%，而影響最大的欄位為 **Night Mins, Night Calls, Night Charge**。這讓我們能夠深入了解哪些欄位對我們模型的性能影響最大。 我們在進行特徵選擇時需要格外小心，因為如果單個特徵對模型的結果影響極大，則它是 目標洩漏 的重要指標，並且該特徵將示能在預測時使用。在這次的例子中，各個欄位都顯示出相似的影響，因此我們可以繼續構建模型。
 
+對於此次實驗，我們計劃使用所有可以使用的欄位。您可以稍後再回到此步驟，嘗試選取不同欄位的組合，以檢視對模型訓練的影響。
 
-For this Lab, we're planning on using all of the available features. You can come back to this step later and try to change some of the features to see the impact on the model training. 
+探索了本節後，是時候訓練模型了！ Canvas 提供了兩個構建選項：
 
-Once you've explored this section, it's time to finally train the model! Before building a complete model.
-
-Canvas offers two build options:
-
-   * Standard build – Builds the best model from an optimized process powered by AutoML; speed is exchanged for greatest accuracy
-   * Quick build – Builds a model in a fraction of the time compared to a standard build; potential accuracy is exchanged for speed.
+   * **Standard build** – 通過 AutoML 的優化流程來構建最佳模型，以速度換取最大精確度。
+   * **Quick build** – 與標準構建相比，構建模型的時間較短，以潛在準確性來換取速度。
 
 ![](/static/shared/canvas-quick-vs-standard.png)
 
-
- It is a good practice to have a general idea about the performances that our model will have by training a **Quick Model**. A quick model trains fewer combinations of models and hyper-parameters in order to prioritize speed over accuracy, especially in cases like ours where we want to prove the value of training an ML model for our use case. Note that quick build is not available for models bigger than 50k rows. Let's go ahead and click **Quick build**.
+在建立完整的模型前，最好我們對於訓練模型的表現，有一個基本想法。一個 **Quick Model** 訓練模型和超參數組合的配對較少，優先考慮速度勝過準確性，尤其當我們希望驗證 訓練模型 能夠產生價值。請注意，**Quick Build** 不適合大於 50k 筆數的模型。現在，讓我們繼續點擊 **Quick build**。
 
 ![](/static/lab1/model-building.png)
 
-Now, we wait anywhere from 2 to 15 minutes. Since the dataset is small, this will take probably even less than 2 minutes. 
+現在，我們大概需要等待 2 - 15 分鐘的時間讓 **Quick build** 完成模型的訓練。由於數據集很小，因此可能不需要等到2分鐘。
 
-When the model building process is complete, the model predicted churn 95.9% of the time. This seems fine, but as analysts we want to dive deeper and see if we can trust the model to make decisions based on it. On the Scoring tab, we can review a visual plot of our predictions mapped to their outcomes. This allows us a deeper insight into our model.
+完成後，Canvas 將自動移動到 **Analyze** 選項卡，向我們展示快速訓練的結果：模型預測正確的客戶流失率為 95.9%。 這看起來不錯，但作為分析師，我們希望更深入地研究，看看我們是否可以信任這個模型並來根據它做出決策。在 **Scoring** 選項卡中，您可以看到表示正確與錯誤預測值的分佈圖，這使我們能夠更深入地了解我們的模型。
 
-Let's focus on the first tab, **Overview**. This is the tab that shows us the **Column impact**, or the estimated importance of each column in predicting the target column. In this example, the duration column has the most significant impact in predicting if a customer will churn. 
+讓我們專注於第一個選項卡 **Overview**。這是向我們展示欄位影響 *Column impact*，或這些特徵，在預測目標時的重要性。在我們的案例中，**Night Calls** 這個欄位在預測客戶是否會流失方面具有最顯著的影響。
 
 ![](/static/lab1/model-status-1.png)
 
 > **Warning**
-> Don\'t worry if the numbers in the below images differ from yours. Machine Learning introduces some stochasticity in the process of training models, which can lead to different results to different builds.
+> 不用擔心以下截屏中顯示的數字是否與您的數字不同。機器學習在模型訓練過程中會引入一些隨機性，這將導致訓練產生出不同的結果。
 
-Canvas separates the dataset into training and test sets. The training dataset is the data Canvas uses to build the model. The test set is used to see if the model performs well with new data. The Sankey diagram in the following screenshot shows how the model performed on the test set. To learn more, you can check the ["Evaluating Your Model's Performance in Amazon SageMaker Canvas" section](https://docs.aws.amazon.com/sagemaker/latest/dg/canvas-evaluate-model.html) of the Canvas documentation, as well as the page for [SHAP Baselines for Explainability](https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-feature-attribute-shap-baselines.html).
+Canvas 會自動將數據集分為 訓練數據集 和 測試數據集。 訓練數據集是 Canvas 用於構建模型的數據，而 測試數據集 則是用於測試模型在處理新數據時是否表現良好。 以下屏幕截圖中的 Sankey圖 顯示了模型在 測試數據集 上的表現。假如您想了解更多詳細資料，您可以查看 ["Evaluating Your Model's Performance in Amazon SageMaker Canvas" section](https://docs.aws.amazon.com/sagemaker/latest/dg/canvas-evaluate-model.html) 和 [SHAP Baselines for Explainability](https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-feature-attribute-shap-baselines.html)。
 
-Let’s go to Overview tab, to review the impact of each column. This information can help the marketing team gain insights that lead to taking actions to reduce customer churn. For example, we can see that both low and high CustServ Calls increase the likelihood of churn. The marketing team can take actions to prevent customer churn based on these learnings. Examples include creating a detailed FAQ on websites to reduce customer service calls, and running education campaigns with customers on the FAQ that can keep engagement up.
+讓我們轉到 **Overview** 選項卡，查看每一個欄位的影響。這些信息可以幫助營銷團隊進行分析，從而採取行動來減少客戶流失。例如，我們可以看到 `CustServ Calls` 數量的高或低都會增加客戶流失的可能性，而營銷團隊便可以根據這些發現以採取措施防止客戶流失，例如可以在網站上創建詳細的 FAQ 常見問題解答 以減少客戶服務電話，並針對常見問題為客戶提供教育活動，以保持他們的參與度。
 
 ![](/static/lab1/model-overview-1.png)
 
-To get more detailed insights beyond what is displayed in the Sankey diagram, business analysts can use a confusion matrix analysis for their business solutions. For example, we want to better understand the likelihood of the model making false predictions. We can see this in the Sankey diagram, but want more insights, so we choose Advanced metrics. We’re presented with a confusion matrix, which displays the performance of a model in a visual format with the following values, specific to the positive class—we’re measuring based on whether they will in fact churn, so our positive class is True in this example:
+業務分析師也可以透過分析 混淆矩陣（Confusion Matrix）以獲取更詳細的見解，例如我們希望更好地了解模型做出錯誤預測的可能性。我們可以點擊 **Advanced metrics** 部分更深入了解模型的性能及更詳細的信息。
 
-   True Positive (TP) – The number of True results that were correctly predicted as True
+我們會看到一個 混淆矩陣，它以視覺化格式來顯示模型的性能，在這個例子中，正類（positive class）為 True（表示 **客戶會流失** 的預測結果）：
 
-   True Negative (TN) – The number of False results that were correctly predicted as False
+   真陽性 True Positive (TP) – 正確預測為 `真` 的 `真結果` 數量
 
-   False Positive (FP) – The number of False results that were wrongly predicted as True
+   真陰性 True Negative (TN) – 正確預測為 `假` 的 `假結果` 數量
 
-   False Negative (FN) – The number of True results that were wrongly predicted as False
+   假陽性 False Positive (FP) – 被錯誤預測為 `真` 的 `假結果` 數量
 
-We can use this matrix chart to determine not only how accurate our model is, but when it is wrong, how often that might be and how it’s wrong.
+   假陰性 False Negative (FN) – 被錯誤預測為 `假` 的 `真結果` 數量
 
-The advanced metrics look good. We can trust the model result. We see very low false positives and false negatives. These are if the model thinks a customer in the dataset will churn and they actually don’t (false positive), or if the model thinks the customer will churn and they actually do (false negative). High numbers for either might make us think more on if we can use the model to make decisions.
+我們不僅可以使用這個矩陣圖來確定我們的模型有多準確，還可以確定模型何時出錯、錯誤的頻率 以及 錯誤的程度。
 
-
+由於這些指標看起來不錯，只有非常低的 假陽性（如果模型預測客戶會流失，而他們實際上不會）和 假陰性（如果模型預測客戶不會流失，而他們實際上會），所以我們可以相信這個模型的預測結果。
 
 ![](/static/lab1/advanced-metrics-1.png)
 
+假如我們的模型看起來非常準確，我們可以直接在 **Predict** 頁面上運行實時預測，可以是批量預測，也可以是單個預測。
 
-Our model looks pretty accurate. We can directly perform an interactive prediction on the Predict tab, either in batch or single (real-time) prediction. 
+現在，您有兩個選擇：
 
-Now, you have two options: 
+1. 您可以使用此模型運行一些預測，請選擇頁面底部的 **Predict** 按鈕；
+1. 您可以使用 **Standard Build** 流程訓練此模型的新版本。這將花費更長的時間（大約 4 - 6 小時），但會產生更準確的結果。
 
-1. you can use this model to run some predictions, by clicking on the button **Predict** at the bottom of the page;
-2. you can create a new Version of this model to train with the **Standard Build** process. This will take much longer - about 4-6 hours - but will be much more accurate. 
-
-For the sake of this lab, we will go forward with Option 1.
+在這個實驗中，我們將選擇選項 1。假如您有更多的空餘時間，也可以選擇運行選項 2。
 
 > **Warning**
-> Note that training a model with **Standard Build** is necessary to share the model with a Data Scientist with the SageMaker Studio integration. **Predictions** do not require the full build, however they can lack in performances with respect to a fully-trained model.
+> 請注意，如果您要從 SageMaker Canvas 共享模型到 SageMaker Studio，您必須使用 **Standard Build** 來訓練模型。**Predictions** 並不需要**Standard Build**，但是它的性能和準確性會比經過完全訓練的模型低。
 
 <br>
 
 ## 使用模型生成預測 Predictions
 
-Now that the model is trained, let's use for some predictions. Select **Predict** at the bottom of the **Analyze** page, or choose the **Predict** tab.
+現在完成模型的訓練，我們可以做一些預測。在 **Analyze** 頁面底部選擇 **Predict**，或選擇 **Predict** 選項卡。
 
-
-Now, choose **Select dataset**
+現在，點擊 **Select dataset**。
 
 ![](/static/lab1/batch-predict.png)
 
-Choose the `churn.csv`. Next, choose **Generate predictions** at bottom of the page.
+選擇 `churn.csv`。接下來，選擇頁面底部的 **Generate predictions** 來生成預測。
 
 ![](/static/lab1/batch-predict-ds.png)
 
- Canvas will use this dataset to generate our predictions. Although it is generally a good idea not to use the same dataset for both training and testing, we're using the same dataset for the sake of simplicity. After a few seconds, the prediction is done.
+Canvas 將使用這個數據集來生成我們的預測。雖然在實際環境下我們在訓練和測試時並不會使用相同的數據集，但為了簡單起見，我們在這次實驗中將使用相同的數據集。
 
-  You can click **View** to see the prediction.
+幾秒鐘後，預測完成。您可以點擊 **View** 以查看結果。
 
-  ![](/static/lab1/batch-predict-results.png)
+![](/static/lab1/batch-predict-results.png)
 
-   Optionally,click the download button to download a CSV file containing the full output. SageMaker Canvas will return a prediction for each row of data and the probability of the prediction being correct. 
-
+您也可以點擊 download 按鈕下載 CSV 文件。 SageMaker Canvas 將會為每行數據返回一個 預測值 以及 預測正確的概率。
 
 ![](/static/lab1/batch-predict-results-1.png)
 
-You can also choose to predict one by one values, by selecting **Single prediction** instead of batch prediction. Canvas will show you a view where you can provide manually the values for each feature, and generate a prediction. This is ideal for situations like **what-if scenarios**: e.g.  What if Night charge is increased? 
+另外，您還可以選擇 **Single prediction** 來進行單次預測。這個適合模擬場景的應用（*what-if* scenarios），以及測試不同的欄位會如何影響模型的預測結果，例如：如果增加夜間費用會否帶來影響？
 
 ![](/static/lab1/singleprediction.png)
 
-**Congratulations\!** You've now completed lab 1. As next steps you can:
+----
 
-1. run this lab again, but building a Standard Model to see its performances;
-1. choose another lab to run
+**恭喜！** 您現在已經完成了實驗1。作為下一步，您可以：
+
+1. 再次運行這個實驗，但建立 Standard Model以查看其模型的表現；
+2. 選擇運行另一個實驗
