@@ -44,7 +44,7 @@
 
 ## 將數據導入 Canvas
 
-第一步是下載我們將使用的數據集。您可以到這裡下載：:link[檔案]{href="https://sagemaker-sample-files.s3.amazonaws.com/datasets/tabular/synthetic/churn.csv" action=download}.
+第一步是下載我們將使用的數據集。您可以到這裡下載：[檔案](https://sagemaker-sample-files.s3.amazonaws.com/datasets/tabular/synthetic/churn.csv)
 
 轉到 Sagemaker Canvas。在左側選單上，您可以點擊第二個圖標，進入數據集部分，然後點擊 **Import** 按鈕。
 
