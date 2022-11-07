@@ -21,9 +21,9 @@
 
 ## 概述 Overview
 
-In this lab, you will assume the role of a business analyst working for an e-commerce company, in the sales department. You will use historical time-series sales data for retail stores to build a model which can be used to forecast sales for a particular retail store. This dataset has been generated synthetically for the purpose of this lab. The data schema is as follows:
+在本實驗中，您將擔任某電子商務公司銷售部門的業務分析師角色。您將使用零售商店的時間序列 歷史銷售數據 來構建一個模型，該模型可用於預測特定零售商店的銷售額。您將使用一個合成數據集，而數據架構如下：
 
-| Column Name | Data type |
+| 欄位名稱 | 資料型別 |
 | ----------- | ----------- |
 | store | INT | 
 | saledate | TIMESTAMP| 
@@ -33,130 +33,128 @@ In this lab, you will assume the role of a business analyst working for an e-com
 
 ## 前言 Forenote
 
-This lab can proceed in two ways: 
+本實驗可以通過兩種方式進行，請選擇以下其中一種方法： 
 
-::::tabs{variant="container" groupId=canvasSource}
-:::tab{id="s3" label="Amazon S3"}
-If you're using going for this option, download the file: [CSV file](/static/datasets/store_daily_sales_reduced.csv)
+### 1. Amazon S3
 
-Go to the AWS Management Console, search **S3** in the searchbox on top of your console, then go to **S3** service console.
+第一步是下載我們將使用的數據集。您可以到這裡下載：[檔案](/static/datasets/store_daily_sales_reduced.csv)
+
+轉到 AWS 管理控制台，在控制台頂部的搜索框中尋找 **S3**，然後去到 **S3** 服務控制台。
 
 ![](/static/shared/search_s3.png)
 
-In the S3 console, click on the **sagemaker-studio-\*** bucket.
+在 S3 控制台中，點擊 **sagemaker-studio-\*** 存儲桶。
 
 ![](/static/shared/studio-bucket.png)
 
 > **Warning**
-> The **sagemaker-studio-\*** bucket was created automatically when you created the SageMaker Studio domain in the **Prerequisites** section. If you follow the **Event Engine** track, the bucket was pre-provisioned by you instructor.
+> **sagemaker-studio-\*** 在當初建立 SageMaker Studio domain 的時候，就已經自動建立。如果你參與 **Event Engine** 活動，則講師會預先準備存儲桶。
 
-Click **Upload**.
+點擊 **Upload**。
 
 ![](/static/shared/s3_upload.png)
 
-On the Upload page, drag and drop the `store_daily_sales_reduced.csv` file you've just downloaded, then click **Upload** at the bottom of the page. Once the upload is complete, you can now click the top-right **Close** button. You should now see the file uploaded in your bucket.
-:::
-:::tab{id="redshift" label="Amazon Redshift"}
+在上傳頁面上，拖放剛才下載的 `store_daily_sales_reduced.csv` 檔案，然後點擊頁面底部的 **Upload**。上傳完成後，您可以點擊右上角 **Close** 按鈕。現在，您應該看到上傳到存儲桶中的文件。
+
+### 2. Amazon Redshift
 
 > **Warning**
-> Note: if you're running the lab with these labs in environments provided by AWS trainers (Event Engine), you don't need to launch the Redshift cluster as described here. You can skip to the [Import the dataset in Canvas](#import-the-dataset-in-canvas) section.
+> 注意：如果您是參與 AWS 講師指導活動並使用 **Event Engine** 提供的環境運行實驗，則 **無須** 按照這個部分的指示來創建 Amazon Redshift。您可以直接跳到 [將數據導入 Canvas](#將數據導入-canvas) 部分。
 
-Set-up a connection to a Redshift cluster, and load data from there - you can create your Redshift cluster downloading this :link[CloudFormation template]{href="/assets/lab3-module/redshift.yaml" action=download} and then creating the CloudFormation stack by following the documentation on :link[Creating a stack on the AWS CloudFormation console]{href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-create-stack.html"}:
+首先，您需要創建 Redshift，請下載此檔案：[CloudFormation 模板](/assets/lab3-module/redshift.yaml)，並按照以下步驟來創建 CloudFormation stack：
 
-1. Follow this link to the :link[AWS CloudFormation console - Create Stack page]{href="https://console.aws.amazon.com/cloudformation/home?#/stacks/create/template"}.
-1. In the **Specify template** portion of the page, choose **Upload a template file**
-1. Choose the file you've just downloaded, hit **Next**
-1. Provide a stack name of your choice, then hit **Next** twice.
-1. In the review page, scroll down to the **Capabilities** section, and select "I acknowledge that AWS CloudFormation might create IAM resources". Hit **Create stack**.
-:::
-::::
+1. 轉到 **AWS CloudFormation** 服務控制台以建立堆疊（stack）： [鏈接](https://console.aws.amazon.com/cloudformation/home?#/stacks/create/template)
+1. 在 **Specify template**（指定範本）頁面上，選擇 **Upload a template file**
+1. 上傳剛才下載的檔案，然後點擊 **Next**
+1. 指定堆疊名稱，然後點擊 **Next**
+1. 在 **Review**（檢閱）頁面上，向下滾動到 **Capabilities** 部分，然後選擇並同意 "I acknowledge that AWS CloudFormation might create IAM resources"，最後點擊 **Create stack** 便完成
 
 <br>
 
 ## 將數據導入 Canvas
 
-Go to the SageMaker Canvas tab created in the **Prerequisites** section. On the left menu, you can click the second icon to head to the Datasets section, then click the **Import** button.
+返回到 Sagemaker Canvas。在左側選單上，您可以點擊第二個圖標，進入數據集部分，然後點擊 **Import** 按鈕。
 
 ![](/static/shared/import-data.png)
 
-::::tabs{variant="container" groupId=canvasSource}
-:::tab{id="s3" label="Amazon S3"}
+### 1. Amazon S3
 
-Now, select the bucket where we've previously uploaded our dataset, the **sagemaker-studio-\*** bucket.
+現在，選擇之前上傳到 **sagemaker-studio-\*** 存儲桶的數據集。
 
 ![](/static/shared/import-from-s3-studio.png)
 
-You can now select the `store_daily_sales_reduced.csv` file uploaded previously by selecting the checkbox at its left. Two new buttons will pop-up at the bottom of your page: **Preview all** and **Import Data**. Let's choose the first one.
+您可以通過在其左側複選框來選擇先前上傳的 `store_daily_sales_reduced.csv` 檔案。頁面底部將彈出兩個新的按鈕：**Preview all** 和 **Import Data**。讓我們選擇第一個。
 
 ![](/static/lab3/canvas-select-preview.png)
 
-You now face a 100-rows preview of the dataset you're looking to import. Once you're done checking that it's indeed the right one, you can click on **Import Data**.
+現在，您可預覽要導入的數據集的 100 筆資料。完成資料檢查，確定正確後，您可點擊 **Import Data**。
 
 ![](/static/lab3/canvas-preview.png)
 
-:::
-:::tab{id="redshift" label="Amazon Redshift"}
-We need to create a connection to the Redshift cluster, by providing the IAM credentials that will give us permission to access the data in it. Let's start by clicking the **Add connection** button on the right, then select **Redshift**.
+### 2. Amazon Redshift
+
+我們需要通過提供 IAM 憑證來創建與 Redshift 集群的連接，該憑證將授予我們訪問其中數據的權限。 讓我們首先單擊右側的 **Add connection** 按鈕，然後選擇 **Redshift**。
 
 ![](/static/shared/import-from-redshift.png)
 
-On the **Add a new Redshift connection** popup screen: 
+在 **Add a new Redshift connection** 彈出頁面上：
 
-- Select IAM for Type field. 
-- Write your Redshift cluster identifier in the Cluster identifier field (`redshift-cluster-1` for the AWS-led workshop).
-- Provide the Database name field (`dev` for the AWS-led workshop). 
-- Provide the Database user field (`awsuser` for the AWS-led workshop). 
-- Provide the Redshift IAM Role ARN for the Unload IAM Role field (you can search this role by going into the [IAM management console](https://console.aws.amazon.com/iamv2/home?#/roles), and searching for `CanvasImmDayRedshiftConnectorRole`). 
-- Choose a name for the Connection name field - any name works here, we will use `redshiftconnection`
-- Finally, click on the Add connection button.
+- **Type** 選擇 IAM。
+- **Cluster identifier** 輸入 `redshift-cluster-1`。
+- **Database name** 輸入 `dev`。
+- **Database user** 輸入 `awsuser`。
+- **Unload IAM Role** 提供 Redshift IAM Role ARN，您可以通過進入 [IAM 管理控制台](https://console.aws.amazon.com/iamv2/home?#/roles) 來搜索 "CanvasImmDayRedshiftConnectorRole" 角色。
+- **Connection name** 輸入任意名稱，例如：`redshiftconnection`。
+- 最後，單擊 **Add connection** 按鈕。
 
 ![](/static/shared/new-redshift-connector-2.png)
 
-The connection to the Redshift cluster is now set-up! You can see `redshiftconnection` button on the top. Select `storesales` table under the `public` schema and drag and drop to the right-hand side panel.
+我們已成功建立與 Redshift 集群的連接！您現在可以在頂部看到 `redshiftconnection` 按鈕，然後選擇 `public` schema 下的 `storesales` 表，再拖放到右側面板。
 
 ![](/static/lab3/import-data-redshift.png)
 
-The table has now been added. You can see a preview of the data in the bottom section of the page. If you wanted, you could load other datasets by joining them with the current table: you can drag & drop a new table, then change the join options by choosing *left join* or other. For this workshop, we will not join other tables, but you can explore this option before moving to the next step. Once you're done exploring the dataset, you can click on **Import Data**.
+現在您已成功添加`storesales`表，並可以在頁面底部看到數據的預覽。如有需要，您可以通過將其他數據集與當前的表連接來加載其他數據集：您可以拖放一個新表，然後通過選擇 *left join* 或其他來更改連接選項。
+
+對於這次實驗，我們並不會加入其他表格，但您可以在進行下一步之前探索此選項。完成數據集探索後，您可以單擊 **Import Data**。
 
 ![](/static/lab3/table-added.png)
 
-Now, you can provide a dataset name, for example `store_sales_data`, and click again the **Import data** button. You are now redirected to the **Datasets** view and you should be able to see your dataset listed here, together with the number of columns and rows in the dataset.
+最後，提供一個數據集名稱，例如 `store_sales_data`，然後再次單擊 **Import data** 按鈕。您將被重定向到 **Datasets** 頁面，在這裡您能夠看到您的數據集以及數據集當中的列數和行數。
 
 ![](/static/lab3/imported-data.png)
-:::
-::::
 
 <br>
 
 ## 建構和訓練 ML 模型
 
-Now that the dataset is imported, you can create a new model by going to the Models screen, and clicking on the **\+ New Model** button.
+現在，讓我們通過點擊左邊選單上的第二個按鈕回到 **Models** 部分。
 
 ![](/static/lab3/new-model.png)
 
-On the **Create new model** popup screen, write `store_sales_forecast_model` for the model name and click on the **Create** button.
+點擊 **\+ New model**，並為您的模型輸入名稱，例如 `store_sales_forecast_model`，然後選擇 **Create**。
 
 ![](/static/lab3/create-new-model.png)
 
-On the **Select dataset** screen, select `store_sales_data` for the dataset and click on the **Select dataset** button.
+在 **Select dataset** 中，選擇 `store_sales_data` 數據集，並點擊底部的按鈕 **Select dataset**。
 
 ![](/static/lab3/select-dataset.png)
 
-On the next screen, you can configure the model for training. You can also select columns to see statistics of each column. Select `sales` for the **Target column** field. Canvas will automatically select **Time series forecasting** as the model type. Click on the **Configure** link.
+Canvas 將自動移動到 **Build** 階段。在此選項卡中，選擇目標欄位，在我們的情況下是 `sales`。Canvas 將自動偵測這是 **Time series forecasting** 問題（也稱為時間序列預測），然後點擊 **Configure** 。
 
 ![](/static/lab3/target-and-problem.png)
 
-The Time Series Forecasting configuration popup screen, you are asked to provide a few information:
-- The **items field**: how you identify you items in the datasets in a unique way; for this use case, select `store` since we are planning to forecast sales per store 
-- The **group column**: if you have logical groupings of the items selected above, you can choose that feature here; we don't have one for this use case, but examples would be `state`, `region`, `country`, or other groupings of stores.
-- The **time stamp field**: select `saledate` here, which is the feature that contains the time stamp information; Canvas requires data timestamp in the format `YYYY-MM-DD HH:mm:ss` (e.g.: `2022-01-01 01:00:00`)
-- Write `120` in the **number of Days** field. 
+在 時間序列預測 配置頁面中，您需要設置以下資料：
 
-Finally, click on the **Save** button.
+- **Item ID column**：在數據集中，識別特定筆數的方式；對於這個案例，請選擇 `store`，因為我們計劃預測每家商店的銷售額
+- **Group column**：如果您需要對上面的選擇進行邏輯分組，您可在此選擇該功能；對於這個案例，我們並沒有分組欄位，但在其他案例中，有可能會出現 "州"、"地區"、"國家" 或其他商店的分組。
+- **Time stamp column**：選擇 `saledate`，即包含時間戳記的特徵；Canvas 需要的時間戳記格式為 `YYYY-MM-DD HH:mm:ss`（例如：`2022-01-01 01:00:00`）
+- **Days**：輸入 `120`，表示我們需要預測未來 120 日的數值。
+
+最後，點擊 **Save** 按鈕來完成設定。
 
 ![](/static/lab3/time-series-configuration.png)
 
-Now that the configuration is done, we're ready to train the model. At the moment of writing, SageMaker Canvas does not support *Quick Build* for Time-Series Forecasting, therefore we will select the **Standard Build** option, and start training the model. Model will take around 3-4 hours to train.
+現在配置已經完成，我們準備訓練模型。在撰寫本實驗時，SageMaker Canvas 並不支持使用 *Quick Build* 來建立時間序列預測模型，因此我們將使用 **Standard Build** 來模型訓練，大約需要 3 - 4 小時的時間來完成。
 
 ![](/static/lab3/start-standard-build.png)
 
@@ -166,15 +164,17 @@ Now that the configuration is done, we're ready to train the model. At the momen
 
 ## 使用模型生成預測 Predictions
 
-When the model training finishes, you will be routed to the **Analyze** tab. There, you can see the average prediction accuracy, and the column impact on prediction outcome. Click on the **Predict** button, to be brought to the **Predict** tab.
+完成後，Canvas 將自動移動到 **Analyze** 選項卡，您可看到平均預測準確度，以及欄位對於預測結果的影響。
+
+現在，我們可以做一些預測。在 **Analyze** 頁面底部選擇 **Predict**，或選擇 **Predict** 選項卡。
 
 ![](/static/lab3/model-accuracy.png)
 
-In order to create forecast predictions, you have to provide first the date range for which the forecast prediction can be made. Then, you can generate forecast predictions for all the items in the dataset or a specific item. 
+為了創建預測，您必須提供進行預測的日期範圍。然後，您可以為數據集中的 所有項目 或 特定項目 來生成預測。
 
-In our workshop, we choose the **Single item** option, and select any of the items from the item dropdown list. We choose number 5 here, and Canvas generates a prediction for our item, showing the average prediction, an upper bound and a lower bound. Canvas provides both results, since it is generally suggested to have bounds rather than a single prediction point so that you can pick whichever fits best your use case: you might want to reduce waste of resources by choosing to use the lower bound, or you might want to choose to follow the upper bound to make sure that you meet customer demand. 
+在這次的實驗中，我們選擇 **Single item** 選項，然後從下拉表單中選擇任何數字為 特定項目 來生成預測。例如我們選擇項目 `5`，讓 Canvas 為我們生成預測，顯示平均預測、預測上限、和 預測下限。 Canvas 會為我們提供 預測界限 而不是單個預測點，讓您可選擇最適合的預測結果：透過選擇 **預測下限**，您可以減少資源浪費；也可以選擇 **預測上限**，讓您可以確保能滿足客戶需求。
 
-For the generated forecast prediction, you can click on the **Download** dropdown menu button to download the forecast prediction chart as image or forecast prediction values as CSV file. 
+對於生成的預測結果，您可點擊 **Download** 選單，將預測圖表下載為 圖檔，或將預測值下載為 CSV 檔案。
 
 ![](/static/lab3/forecasts.png)
 
@@ -182,7 +182,7 @@ For the generated forecast prediction, you can click on the **Download** dropdow
 
 ## 清理 Cleanup
 
-At the end of your experimentation, don't forget to delete the Redshift cluster created at the beginning of this lab. In order to do so, head over to the [CloudFormation Management Console page](https://console.aws.amazon.com/cloudformation), and delete the stack you created.
+在實驗結束時，不要忘記刪除在本實驗開始時所創建的 Redshift 集群。請轉到 [CloudFormation 管理控制台頁面](https://console.aws.amazon.com/cloudformation)，然後刪除您創建的堆疊（stack）。
 
 ![](/static/lab3/delete-cfn-stack.png)
 
@@ -190,4 +190,4 @@ At the end of your experimentation, don't forget to delete the Redshift cluster 
 
 -------
 
-**Congratulations\!** You've now completed lab 3. You can now go ahead and choose a new lab to run.
+**恭喜！** 您現在已經完成了實驗3。您可選擇要繼續運行的新實驗。
